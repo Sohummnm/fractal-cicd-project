@@ -20,6 +20,6 @@ spec:
     spec:
       containers:
         - name: frontend
-          image: sohummnm/frontend:-green:v1
+          image: sohummnm/frontend-green:v1
           ports:
             - containerPort: 80
