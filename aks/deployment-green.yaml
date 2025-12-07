@@ -1,0 +1,25 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: frontend-green
+  namespace: project
+  labels:
+    app: frontend
+    version: green
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: frontend
+      version: green
+  template:
+    metadata:
+      labels:
+        app: frontend
+        version: green
+    spec:
+      containers:
+        - name: frontend
+          image: sohummnm/frontend:v2
+          ports:
+            - containerPort: 80
