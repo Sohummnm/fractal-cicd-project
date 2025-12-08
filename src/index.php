@@ -1,7 +1,6 @@
 <html>
 <head>
-
-<title>Restaurant Regisration App Check-1</title>
+<title>Restaurant Registration App Check-1</title>
 <style>
 body {font-family: Arial, Helvetica, sans-serif;}
 form {border: 3px solid #f1f1f1;}
@@ -25,9 +24,7 @@ button {
   width: 25%;
 }
 
-button:hover {
-  opacity: 0.8;
-}
+button:hover { opacity: 0.8; }
 
 .cancelbtn {
   width: auto;
@@ -45,9 +42,7 @@ img.avatar {
   border-radius: 200px;
 }
 
-.container {
-  padding: 16px;
-}
+.container { padding: 16px; }
 
 span.psw {
   float: right;
@@ -55,19 +50,13 @@ span.psw {
 }
 
 @media screen and (max-width: 300px) {
-  span.psw {
-     display: block;
-     float: none;
-  }
-  .cancelbtn {
-     width: 100%;
-  }
+  span.psw { display: block; float: none; }
+  .cancelbtn { width: 100%; }
 }
 </style>
 
 <?php
-if($_SERVER['REQUEST_METHOD'] == "POST")
-{
+if ($_SERVER['REQUEST_METHOD'] == "POST") {
     $servername = getenv('DB_HOST');
     $username   = getenv('DB_USER');
     $password   = getenv('DB_PASSWORD');
@@ -82,7 +71,7 @@ if($_SERVER['REQUEST_METHOD'] == "POST")
     // Path to CA certificate bundle (default on App Service)
     $ssl_cert = '/etc/ssl/certs/ca-certificates.crt';
 
-    mysqli_ssl_set($conn, NULL, NULL, $ssl_cert, NULL, NULL);
+    mysqli_ssl_set($conn, null, null, $ssl_cert, null, null);
     mysqli_options($conn, MYSQLI_OPT_SSL_VERIFY_SERVER_CERT, true);
 
     // Connect securely with SSL
@@ -93,7 +82,7 @@ if($_SERVER['REQUEST_METHOD'] == "POST")
         $password,
         $dbname,
         3306,
-        NULL,
+        null,
         MYSQLI_CLIENT_SSL
     )) {
         die("Connection failed: " . mysqli_connect_error());
@@ -116,22 +105,21 @@ if($_SERVER['REQUEST_METHOD'] == "POST")
 </head>
 
 <body>
-<h2> Restaurant Registration Form (Version-1) </h1>
+<h2>Restaurant Registration Form (Version-1)</h2>
 <form action="index.php" method="POST">
-        <div class="imgcontainer">
+  <div class="imgcontainer">
     <img src="image.png" alt="Avatar" class="avatar">
   </div>
 
-<div class="container">
-    <label for="name"><b>Restaurant Name </b></label>
+  <div class="container">
+    <label for="name"><b>Restaurant Name</b></label>
     <input type="text" placeholder="Enter Username" name="name" required>
-     <br />
+    <br />
     <label for="mobile"><b>Mobile Number</b></label>
     <input type="text" placeholder="Enter mobile" name="mobile" required>
-     <br />
+    <br />
     <button type="submit">Add Employee</button>
   </div>
-
 </form>
 </body>
 </html>
