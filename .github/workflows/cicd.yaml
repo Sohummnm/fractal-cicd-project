@@ -22,7 +22,7 @@ jobs:
               run: vendor/bin/phpunit --color=always tests/
 
             - name: Lint (php code sniffer)
-              run: vendor/bin/phpcs --standard=PSR12 src/
+              run: vendor/bin/phpcbf --standard=PSR12 src/
 
             - name: Docker Login
               uses: docker/login-action@v3
