@@ -6,7 +6,6 @@ metadata:
 spec:
   selector:
     istio: aks-istio-ingressgateway-internal
-    app: aks-istio-ingressgateway-internal
   servers:
   - port:
       number: 80
