@@ -23,7 +23,6 @@ jobs:
 
             - name: Lint (php code sniffer)
               run: |
-                  vendor/bin/phpcbf --standard=PSR12 src/
                   vendor/bin/phpcs --standard=PSR12 src/
 
             - name: Docker Login
