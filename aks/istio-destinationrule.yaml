@@ -4,7 +4,7 @@ metadata:
   name: frontend-destination
   namespace: project
 spec:
-  host: frontend
+  host: frontend.project.svc.cluster.local
   subsets:
   - name: blue
     labels:
