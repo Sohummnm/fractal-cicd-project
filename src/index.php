@@ -1,62 +1,95 @@
 <html>
 <head>
-<title>Restaurant Registration App Check-1</title>
+<title>Restaurant Registration App - BLUE</title>
+
 <style>
-body {font-family: Arial, Helvetica, sans-serif;}
-form {border: 3px solid #f1f1f1;}
+    body {
+        font-family: "Segoe UI", Arial, sans-serif;
+        background: linear-gradient(to bottom right, #dce9ff, #ffffff);
+        margin: 0;
+        padding: 0;
+    }
 
-input[type=text], input[type=password] {
-  width: 25%;
-  padding: 12px 20px;
-  margin: 8px 0;
-  display: inline-block;
-  border: 1px solid #ccc;
-  box-sizing: border-box;
-}
+    .wrapper {
+        width: 100%;
+        display: flex;
+        justify-content: center;
+        margin-top: 60px;
+    }
 
-button {
-  background-color: #4CAF50;
-  color: white;
-  padding: 14px 20px;
-  margin: 8px 0;
-  border: none;
-  cursor: pointer;
-  width: 25%;
-}
+    .card {
+        background: #ffffff;
+        padding: 40px 50px;
+        border-radius: 15px;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+        text-align: center;
+        width: 400px;
+        animation: fadeIn 0.5s ease-in-out;
+        border-top: 10px solid #1e6fff; /* BLUE indicator */
+    }
 
-button:hover { opacity: 0.8; }
+    .tag-blue {
+        background: #1e6fff;
+        color: white;
+        padding: 6px 14px;
+        border-radius: 50px;
+        display: inline-block;
+        font-size: 14px;
+        margin-bottom: 15px;
+        font-weight: bold;
+    }
 
-.cancelbtn {
-  width: auto;
-  padding: 10px 18px;
-  background-color: #f44336;
-}
+    h2 {
+        margin-bottom: 20px;
+        color: #333;
+        font-size: 26px;
+        letter-spacing: 0.5px;
+    }
 
-.imgcontainer {
-  text-align: left;
-  margin: 24px 0 12px 0;
-}
+    input[type=text] {
+        width: 100%;
+        padding: 14px;
+        margin: 12px 0;
+        border-radius: 8px;
+        border: 1px solid #ccc;
+        font-size: 15px;
+        transition: 0.3s;
+    }
 
-img.avatar {
-  width: 100px;
-  border-radius: 200px;
-}
+    input[type=text]:focus {
+        border-color: #1e6fff;
+        box-shadow: 0 0 6px rgba(30, 111, 255, 0.3);
+        outline: none;
+    }
 
-.container { padding: 16px; }
+    button {
+        background-color: #1e6fff;
+        color: white;
+        padding: 14px;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+        width: 100%;
+        font-size: 16px;
+        transition: 0.3s;
+    }
 
-span.psw {
-  float: right;
-  padding-top: 16px;
-}
+    button:hover {
+        background-color: #1554c7;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 10px rgba(30, 111, 255, 0.3);
+    }
 
-@media screen and (max-width: 300px) {
-  span.psw { display: block; float: none; }
-  .cancelbtn { width: 100%; }
-}
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(10px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
 </style>
 
 <?php
-if ($_SERVER['REQUEST_METHOD'] == "POST") {
+if($_SERVER['REQUEST_METHOD'] == "POST")
+{
+    // Read DB config from ENV
     $servername = getenv('DB_HOST');
     $username   = getenv('DB_USER');
     $password   = getenv('DB_PASSWORD');
@@ -65,37 +98,20 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
     $name  = $_POST["name"];
     $phone = $_POST["mobile"];
 
-    // Initialize MySQLi with SSL
-    $conn = mysqli_init();
+    // Plain MySQL connection (NO SSL)
+    $conn = new mysqli($servername, $username, $password, $dbname);
 
-    // Path to CA certificate bundle (default on App Service)
-    $ssl_cert = '/etc/ssl/certs/ca-certificates.crt';
-
-    mysqli_ssl_set($conn, null, null, $ssl_cert, null, null);
-    mysqli_options($conn, MYSQLI_OPT_SSL_VERIFY_SERVER_CERT, true);
-
-    // Connect securely with SSL
-    if (!mysqli_real_connect(
-        $conn,
-        $servername,
-        $username,
-        $password,
-        $dbname,
-        3306,
-        null,
-        MYSQLI_CLIENT_SSL
-    )) {
-        die("Connection failed: " . mysqli_connect_error());
+    if ($conn->connect_error) {
+        die("<p style='color:red;text-align:center;font-size:18px;'>DB Connection Failed: " . $conn->connect_error . "</p>");
     }
 
-    // Use prepared statement (safer)
     $stmt = $conn->prepare("INSERT INTO employee (name, mobile) VALUES (?, ?)");
     $stmt->bind_param("ss", $name, $phone);
 
     if ($stmt->execute()) {
-        echo "Record created successfully";
+        echo "<p style='color: green; font-size: 18px; text-align:center;'>Record added successfully (BLUE)!</p>";
     } else {
-        echo "Error: " . $stmt->error;
+        echo "<p style='color: red; font-size: 18px; text-align:center;'>Error: " . $stmt->error . "</p>";
     }
 
     $stmt->close();
@@ -105,21 +121,25 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
 </head>
 
 <body>
-<h2>Restaurant Registration Form (Version-1)</h2>
-<form action="index.php" method="POST">
-  <div class="imgcontainer">
-    <img src="image.png" alt="Avatar" class="avatar">
-  </div>
 
-  <div class="container">
-    <label for="name"><b>Restaurant Name</b></label>
-    <input type="text" placeholder="Enter Username" name="name" required>
-    <br />
-    <label for="mobile"><b>Mobile Number</b></label>
-    <input type="text" placeholder="Enter mobile" name="mobile" required>
-    <br />
-    <button type="submit">Add Employee</button>
-  </div>
-</form>
+<div class="wrapper">
+    <div class="card">
+
+        <!-- BLUE badge -->
+        <div class="tag-blue">BLUE DEPLOYMENT</div>
+
+        <h2>Restaurant Registration</h2>
+
+        <form action="index.php" method="POST">
+
+            <input type="text" placeholder="Restaurant Name" name="name" required>
+
+            <input type="text" placeholder="Mobile Number" name="mobile" required>
+
+            <button type="submit">Add Employee</button>
+        </form>
+    </div>
+</div>
+
 </body>
 </html>
