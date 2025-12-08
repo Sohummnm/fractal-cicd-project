@@ -1,7 +1,7 @@
 <html>
 <head>
 
-<title>Restaurant Regisration App</title>
+<title>Restaurant Regisration App Check-1</title>
 <style>
 body {font-family: Arial, Helvetica, sans-serif;}
 form {border: 3px solid #f1f1f1;}
