@@ -76,14 +76,14 @@ jobs:
 
         - name: Update Deployment.yaml manifest of the target env
           run: |
-            sed -i "s|image: .*|image: ${{ secrets.DOCKER_USERNAME}}/frontend:${{ github.sha }}|g" aks/deployment-${{ steps.target.outputs.target }}.yaml
+            sed -i "s|image: .*|image: ${{ secrets.DOCKER_USERNAME }}/frontend:${{ github.sha }}|g" aks/deployment-${{ steps.target.outputs.target }}.yaml
 
         - name: Commit and push the changes
           run: |
             git config user.name "sohummnm"
             git config user.email "sohamkanoj55@gmail.com"
-            git add aks/deployment-${{ steps.target.outputs.target}}.yaml
-            git commit -m "Deploy image ${{ secrets.DOCKER_USERNAME}}/frontend:${{ github.sha }} to aks/deployment-${{ steps.target.outputs.target}}"
+            git add aks/deployment-${{ steps.target.outputs.target }}.yaml
+            git commit -m "Deploy image ${{ secrets.DOCKER_USERNAME}}/frontend:${{ github.sha }} to aks/deployment-${{ steps.target.outputs.target }}"
             git push
           env:
             GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
