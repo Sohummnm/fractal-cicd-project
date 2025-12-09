@@ -1,6 +1,6 @@
 <html>
 <head>
-<title>Restaurant Registration App - BLUE</title>
+<title>Restaurant Registration App - From Live </title>
 
 <style>
     body {
@@ -126,7 +126,7 @@ if($_SERVER['REQUEST_METHOD'] == "POST")
     <div class="card">
 
         <!-- BLUE badge -->
-        <div class="tag-blue">BLUE DEPLOYMENT</div>
+        <div class="tag-blue">BLUE DEPLOYMENT LIVE</div>
 
         <h2>Restaurant Registration</h2>
 
