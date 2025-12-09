@@ -143,13 +143,13 @@ jobs:
           run: |
             # Set blue = 100, green=0 or vice versa
             if [ "${{ needs.deploy.outputs.target }}" = "blue" ]; then
-              sed -i "s|subset: blue.*weight: [0-9]*|subset: blue\n      weight: 0|g" aks/istio-virtualservice.yaml
-              sed -i "s|subset: green.*weight: [0-9]*|subset: green\n      weight: 100|g" aks/istio-virtualservice.yaml
+              sed -i "/subset: blue/{n; s/weight: [0-9]*/weight: 0/}" aks/istio-virtualservice.yaml
+              sed -i "/subset: green/{n; s/weight: [0-9]*/weight: 100/}" aks/istio-virtualservice.yaml
             else
-              sed -i "s|subset: blue.*weight: [0-9]*|subset: blue\n      weight: 100|g" aks/istio-virtualservice.yaml
-              sed -i "s|subset: green.*weight: [0-9]*|subset: green\n      weight: 0|g" aks/istio-virtualservice.yaml
+              sed -i "/subset: blue/{n; s/weight: [0-9]*/weight: 100/}" aks/istio-virtualservice.yaml
+              sed -i "/subset: green/{n; s/weight: [0-9]*/weight: 0/}" aks/istio-virtualservice.yaml
             fi
-        
+
         - name: Update current-color.txt
           run: |
             echo "${{ needs.deploy.outputs.target }}" > aks/current-color.txt
@@ -171,11 +171,11 @@ jobs:
           run: |
             PREV=$(cat aks/current-color.txt)
             if [ "$PREV" = "blue" ]; then
-              sed -i "s|subset: blue.*weight: [0-9]*|subset: blue\n      weight: 100|g" aks/istio-virtualservice.yaml
-              sed -i "s|subset: green.*weight: [0-9]*|subset: green\n      weight: 0|g" aks/istio-virtualservice.yaml
+              sed -i "/subset: blue/{n; s/weight: [0-9]*/weight: 100/}" aks/istio-virtualservice.yaml
+              sed -i "/subset: green/{n; s/weight: [0-9]*/weight: 0/}" aks/istio-virtualservice.yaml
             else
-              sed -i "s|subset: green.*weight: [0-9]*|subset: green\n      weight: 100|g" aks/istio-virtualservice.yaml
-              sed -i "s|subset: blue.*weight: [0-9]*|subset: blue\n      weight: 0|g" aks/istio-virtualservice.yaml
+              sed -i "/subset: green/{n; s/weight: [0-9]*/weight: 100/}" aks/istio-virtualservice.yaml
+              sed -i "/subset: blue/{n; s/weight: [0-9]*/weight: 0/}" aks/istio-virtualservice.yaml
             fi
             git config --global user.name 'sohummnm'
             git config --global user.email 'sohamkanoj55@gmail.com'
