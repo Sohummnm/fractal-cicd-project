@@ -4,6 +4,7 @@ on:
     workflow_dispatch:
 permissions:
   contents: write
+  id-token: write
 jobs:
     build:
         runs-on: ubuntu-latest
@@ -60,6 +61,8 @@ jobs:
                 context: .
                 push: true
                 tags: ${{ secrets.DOCKER_USERNAME }}/frontend:${{ github.sha }}
+                cache-from: type=registry,ref=${{ secrets.DOCKER_USERNAME }}/frontend:cache
+                cache-to: type=registry,ref=${{ secrets.DOCKER_USERNAME }}/frontend:cache,mode=max
     deploy:
       runs-on: ubuntu-latest
       needs: push
@@ -154,6 +157,8 @@ jobs:
         - name: Update current-color.txt
           run: |
             echo "${{ needs.deploy.outputs.target }}" > aks/current-color.txt
+            git config --global user.name 'sohummnm'
+            git config --global user.email 'sohamkanoj55@gmail.com'
             git add aks/istio-virtualservice.yaml aks/current-color.txt
             git commit -m "[skip ci] Switched Traffic to ${{ needs.deploy.outputs.target }} Environment"
             git push
@@ -175,6 +180,8 @@ jobs:
               sed -i "s|subset: green.*weight: [0-9]*|subset: green\n      weight: 100|g" aks/istio-virtualservice.yaml
               sed -i "s|subset: blue.*weight: [0-9]*|subset: blue\n      weight: 0|g" aks/istio-virtualservice.yaml
             fi
+            git config --global user.name 'sohummnm'
+            git config --global user.email 'sohamkanoj55@gmail.com'
             git add aks/istio-virtualservice.yaml
             git commit -m "[skip ci] Rolled back to $PREV"
             git push
