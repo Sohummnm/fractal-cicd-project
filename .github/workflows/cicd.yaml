@@ -9,7 +9,7 @@ jobs:
         runs-on: ubuntu-latest
         steps:
             - name: Checkout Code
-              uses: actions/checkout@v4
+              uses: actions/checkout@v5
             
             - name: Setup php
               uses: shivammathur/setup-php@v2
@@ -28,9 +28,10 @@ jobs:
                   vendor/bin/phpcs --standard=PSR12 src/ || true
     push:
       runs-on: ubuntu-latest
+      needs: build
       steps:
             - name: Checkout Code
-              uses: actions/checkout@v4
+              uses: actions/checkout@v5
                   
             - name: Docker Login
               uses: docker/login-action@v3
@@ -62,9 +63,11 @@ jobs:
     deploy:
       runs-on: ubuntu-latest
       needs: push
+      outputs:
+        target: ${{ steps.target.outputs.target }}
       steps:
         - name: Checkout Code
-          uses: actions/checkout@v2
+          uses: actions/checkout@v5
           with:
             ref: main
             token: ${{ secrets.GITHUB_TOKEN }}
@@ -93,7 +96,7 @@ jobs:
             git config --global user.name 'sohummnm'
             git config --global user.email 'sohamkanoj55@gmail.com'
             git add aks/deployment-${{ steps.target.outputs.target }}.yaml
-            git commit -m "Deploy image ${{ secrets.DOCKER_USERNAME}}/frontend:${{ github.sha }} to aks/deployment-${{ steps.target.outputs.target }}.yaml"
+            git commit -m "[skip ci] Deploy image ${{ secrets.DOCKER_USERNAME}}/frontend:${{ github.sha }} to aks/deployment-${{ steps.target.outputs.target }}.yaml"
             git push origin main
     validate:
       needs: deploy
@@ -109,29 +112,69 @@ jobs:
             tenant-id: ${{ secrets.AZURE_TENANT_ID }}
             subscription-id: ${{secrets.AZURE_SUBSCRIPTION_ID }}
             
-
-        - name: Install Azure CLI
-          uses: azure/cli@v2
-          with:
-            azcliversion: latest
-
         - name: Setup Kubectl
           uses: azure/setup-kubectl@v3
           with:
             version: latest
 
         - name: Get aks credentials[kube config]
-          run: |
-            az aks get-credentials \
+          uses: azure/CLI@v1
+          with:
+            azcliversion: latest
+            inlineScript: |
+              az aks get-credentials \
               --resource-group ${{ vars.RESOURCE_GROUP }} \
               --name ${{ vars.AKS_CLUSTER_NAME }} \
               --overwrite-existing
 
         - name: validate
           run: |
-            kubectl get pods -n project \
-            kubectl run curlpod -it --rm --image=curlimages/curl --restart=Never \
-            -- curl -s http://frontend-${{ needs.deploy.outputs.target }}.project.svc.cluster.local/health || exit 1
+            kubectl get pods -n project 
+            kubectl run curlpod --namespace project --annotations "sidecar.istio.io/inject=false" --rm --image=curlimages/curl --restart=Never -- curl frontend-service-${{ needs.deploy.outputs.target }}.project.svc.cluster.local
 
+    switch-traffic:
+      runs-on: ubuntu-latest
+      needs: [deploy, validate]
+      if: success()
+      steps:
+        - name: Checkout Code
+          uses: actions/checkout@v5
 
+        - name: Switch Virtual Service weights
+          run: |
+            # Set blue = 100, green=0 or vice versa
+            if [ "${{ needs.deploy.outputs.target }}" = "green" ]; then
+              sed -i "s|subset: blue.*weight: [0-9]*|subset: blue\n      weight: 0|g" aks/istio-virtualservice.yaml
+              sed -i "s|subset: green.*weight: [0-9]*|subset: green\n      weight: 100|g" aks/istio-virtualservice.yaml
+            else
+              sed -i "s|subset: blue.*weight: [0-9]*|subset: blue\n      weight: 100|g" aks/istio-virtualservice.yaml
+              sed -i "s|subset: green.*weight: [0-9]*|subset: green\n      weight: 0|g" aks/istio-virtualservice.yaml
+            fi
+        
+        - name: Update current-color.txt
+          run: |
+            echo "${{ needs.deploy.outputs.target }}" > aks/current-color.txt
+            git add aks/istio-virtualservice.yaml aks/current-color.txt
+            git commit -m "[skip ci] Switched Traffic to ${{ needs.deploy.outputs.target }} Environment"
+            git push
+    rollback:
+      runs-on: ubuntu-latest
+      needs: [deploy, validate]
+      if: failure()
+      steps:
+        - name: Checkout Code
+          uses: actions/checkout@v5
 
+        - name: Rollback Virtual Service
+          run: |
+            PREV=$(cat aks/current-color.txt)
+            if [ "$PREV" = "blue" ]; then
+              sed -i "s|subset: blue.*weight: [0-9]*|subset: blue\n      weight: 100|g" aks/istio-virtualservice.yaml
+              sed -i "s|subset: green.*weight: [0-9]*|subset: green\n      weight: 0|g" aks/istio-virtualservice.yaml
+            else
+              sed -i "s|subset: green.*weight: [0-9]*|subset: green\n      weight: 100|g" aks/istio-virtualservice.yaml
+              sed -i "s|subset: blue.*weight: [0-9]*|subset: blue\n      weight: 0|g" aks/istio-virtualservice.yaml
+            fi
+            git add aks/istio-virtualservice.yaml
+            git commit -m "[skip ci] Rolled back to $PREV"
+            git push
