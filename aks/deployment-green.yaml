@@ -20,7 +20,7 @@ spec:
     spec:
       containers:
         - name: frontend
-          image: sohummnm/frontend-green:v1
+          image: sohummnm/frontend:97f3fca15daf10a53e854273bc08ba156333ef0b
           ports:
             - containerPort: 80
           env:
