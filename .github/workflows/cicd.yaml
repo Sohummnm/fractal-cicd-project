@@ -3,7 +3,7 @@ name: CICD
 on:
     workflow_dispatch:
 jobs:
-    build-stage:
+    build-push:
         runs-on: ubuntu-latest
         steps:
             - name: Checkout Code
@@ -52,7 +52,7 @@ jobs:
                 context: .
                 push: true
                 tags: ${{ secrets.DOCKER_USERNAME }}/frontend:${{ github.sha }}
-
+      
 
 
 
