@@ -98,6 +98,7 @@ jobs:
             git config --global user.email 'sohamkanoj55@gmail.com'
             git add aks/deployment-${{ steps.target.outputs.target }}.yaml
             git commit -m "[skip ci] Deploy image ${{ secrets.DOCKER_USERNAME}}/frontend:${{ github.sha }} to aks/deployment-${{ steps.target.outputs.target }}.yaml"
+            git pull --rebase origin main
             git push origin main
     validate:
       needs: deploy
@@ -156,6 +157,7 @@ jobs:
             git config --global user.email 'sohamkanoj55@gmail.com'
             git add aks/istio-virtualservice.yaml aks/current-color.txt
             git commit -m "[skip ci] Switched Traffic to ${{ needs.deploy.outputs.target }} Environment"
+            git pull --rebase origin main
             git push
     rollback:
       runs-on: ubuntu-latest
@@ -179,4 +181,5 @@ jobs:
             git config --global user.email 'sohamkanoj55@gmail.com'
             git add aks/istio-virtualservice.yaml
             git commit -m "[skip ci] Rolled back to $PREV"
+            git pull --rebase origin main
             git push
