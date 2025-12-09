@@ -68,7 +68,7 @@ jobs:
         - name: Decide target color environment
           id: target
           run: |
-            if ["${{ steps.color.outputs.current }}" = "blue" ]; then
+            if [ "${{ steps.color.outputs.current }}" = "blue" ]; then
               echo "target=green" >> $GITHUB_OUTPUT
             else 
               echo "target=blue" >> $GITHUB_OUTPUT
