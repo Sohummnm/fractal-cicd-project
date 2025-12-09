@@ -85,6 +85,8 @@ jobs:
             git add aks/deployment-${{ steps.target.outputs.target}}.yaml
             git commit -m "Deploy image ${{ secrets.DOCKER_USERNAME}}/frontend:${{ github.sha }} to aks/deployment-${{ steps.target.outputs.target}}"
             git push
+          env:
+            GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
 
 
