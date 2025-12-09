@@ -15,7 +15,7 @@ spec:
         app: mysql
     spec:
       nodeSelector:
-        nodepool: userpool
+        agentpool: userpool
       containers:
         - name: mysql
           image: mysql:8.0
