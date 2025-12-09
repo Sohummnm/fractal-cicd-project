@@ -18,8 +18,6 @@ spec:
       annotations:
         sidecar.istio.io/inject: "false"
     spec:
-      nodeSelector:
-        agentpool: userpool
       containers:
         - name: mysql
           image: mysql:8.0
