@@ -119,10 +119,7 @@ jobs:
             version: latest
 
         - name: Get aks credentials[kube config]
-          uses: azure/CLI@v1
-          with:
-            azcliversion: latest
-            inlineScript: |
+          run: |
               az aks get-credentials \
               --resource-group ${{ vars.RESOURCE_GROUP }} \
               --name ${{ vars.AKS_CLUSTER_NAME }} \
