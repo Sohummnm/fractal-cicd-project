@@ -6,7 +6,7 @@ metadata:
 spec:
   selector:
     app: frontend
-    labels: green
+    version: green
   ports:
     - port: 80
       targetPort: 80
