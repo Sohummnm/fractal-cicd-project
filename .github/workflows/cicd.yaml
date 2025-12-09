@@ -80,8 +80,8 @@ jobs:
 
         - name: Commit and push the changes
           run: |
-            git config user.name "github-actions"
-            git config user.email "actions@github.com"
+            git config user.name "sohummnm"
+            git config user.email "sohamkanoj55@gmail.com"
             git add aks/deployment-${{ steps.target.outputs.target}}.yaml
             git commit -m "Deploy image ${{ secrets.DOCKER_USERNAME}}/frontend:${{ github.sha }} to aks/deployment-${{ steps.target.outputs.target}}"
             git push
