@@ -128,7 +128,7 @@ jobs:
         - name: validate
           run: |
             kubectl get pods -n project 
-            kubectl run curlpod --namespace project --annotations "sidecar.istio.io/inject=false" --rm --image=curlimages/curl --restart=Never -- curl frontend-service-${{ needs.deploy.outputs.target }}.project.svc.cluster.local
+            kubectl run curlpod --namespace project --annotations "sidecar.istio.io/inject=false" -it --rm --image=curlimages/curl --restart=Never -- curl frontend-service-${{ needs.deploy.outputs.target }}.project.svc.cluster.local
 
     switch-traffic:
       runs-on: ubuntu-latest
