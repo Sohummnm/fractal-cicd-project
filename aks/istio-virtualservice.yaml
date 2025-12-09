@@ -11,10 +11,10 @@ spec:
   http:
   - route:
     - destination:
-        host: frontend.project.svc.cluster.local
+        host: frontend-service-blue.project.svc.cluster.local
         subset: blue
-      weight: 50
+      weight: 100
     - destination:
-        host: frontend.project.svc.cluster.local
+        host: frontend-service-green.project.svc.cluster.local
         subset: green
-      weight: 50
+      weight: 0
