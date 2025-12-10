@@ -29,10 +29,6 @@ variable "authorized_ip_ranges" {
   default     = ["0.0.0.0/0"]
 }
 
-variable "appgw_id" {
-  description = "Application Gateway ID for ingress"
-  type        = string
-}
 
 
 variable "node_count" {
