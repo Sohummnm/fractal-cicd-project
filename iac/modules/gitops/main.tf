@@ -1,12 +1,12 @@
 resource "azapi_resource" "flux_extension" {
   type      = "Microsoft.KubernetesConfiguration/extensions@2022-03-01"
   name      = "flux"
-  parent_id = data.terraform_remote_state.aks_cluster.id
+  parent_id = var.aks_cluster_id
 
   body = jsonencode({
     properties = {
-      extensionType = "flux"
-      autoUpgradeMinorVersion = true
+      extensionType            = "flux"
+      autoUpgradeMinorVersion  = true
       scope = {
         cluster = {
           releaseNamespace = "flux-system"
@@ -19,8 +19,8 @@ resource "azapi_resource" "flux_extension" {
 resource "azapi_resource" "flux_gitops" {
   type      = "Microsoft.KubernetesConfiguration/fluxConfigurations@2022-03-01"
   name      = "flux-gitops"
-  parent_id = data.terraform_remote_state.aks_cluster.outputs.aks_id
-  location  = data.terraform_remote_state.resource_group.rg_location
+  parent_id = var.aks_cluster_id
+  location  = var.resource_group_location
 
   body = jsonencode({
     properties = {
@@ -29,16 +29,16 @@ resource "azapi_resource" "flux_gitops" {
       sourceKind = "GitRepository"
       
       gitRepository = {
-        url = var.gitops_repo_url
-        syncIntervalInSeconds = 60
-        httpsCACert = null
+        url                    = var.gitops_repo_url
+        syncIntervalInSeconds  = 60
+        httpsCACert            = null
       }
 
       kustomizations = {
         app = {
-          path = var.gitops_repo_path
-          prune = true
-          retryIntervalInSeconds = 60
+          path                     = var.gitops_repo_path
+          prune                    = true
+          retryIntervalInSeconds   = 60
         }
       }
     }

@@ -1,6 +1,9 @@
 module "gitops" {
   source = "../../../modules/gitops"
-  gitops_repo_path = var.gitops_repo_path
-  gitops_repo_url = var.gitops_repo_url
 
+  aks_cluster_id          = data.terraform_remote_state.aks.outputs.aks_id
+  resource_group_location = data.terraform_remote_state.resource_group.outputs.rg_location
+
+  gitops_repo_url  = var.gitops_repo_url
+  gitops_repo_path = var.gitops_repo_path
 }

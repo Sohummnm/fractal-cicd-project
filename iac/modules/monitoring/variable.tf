@@ -1,18 +1,32 @@
 variable "workspace_name" {
-  description = "The name of the Log Analytics Workspace."
-  type        = string
-}
-variable "workspace_sku" {
-  description = "The SKU of the Log Analytics Workspace."
+  description = "Name of the Log Analytics workspace"
   type        = string
 }
 
-variable "retention_in_days" {
-  description = "The retention period for the Log Analytics Workspace in days."
-  type        = number
+variable "workspace_sku" {
+  description = "SKU of the Log Analytics workspace"
+  type        = string
+  default     = "PerGB2018"
 }
+
+variable "retention_in_days" {
+  description = "Data retention period in days"
+  type        = number
+  default     = 30
+}
+
 variable "tags" {
-  description = "A map of tags to assign to the resource."
+  description = "Tags to apply to the workspace"
   type        = map(string)
   default     = {}
+}
+
+variable "resource_group_name" {
+  description = "Name of the resource group where the workspace will be created"
+  type        = string
+}
+
+variable "resource_group_location" {
+  description = "Location of the resource group"
+  type        = string
 }

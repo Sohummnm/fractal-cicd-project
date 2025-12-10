@@ -1,8 +1,20 @@
 module "aks" {
-    source = "../../../modules/aks"
-    cluster_name = var.cluster_name
-    dns_prefix = var.dns_prefix
-    vm_size = var.vm_size
-    tags = var.tags
-
+  source                     = "../../../modules/aks"
+  cluster_name               = var.cluster_name
+  resource_group_name        = data.terraform_remote_state.resource_group.outputs.rg_name
+  resource_group_location    = data.terraform_remote_state.resource_group.outputs.rg_location
+  resource_group_id          = data.terraform_remote_state.resource_group.outputs.rg_id
+  dns_prefix                 = var.dns_prefix
+  authorized_ip_ranges       = var.authorized_ip_ranges
+  appgw_id                     = data.terraform_remote_state.appgw.outputs.appgw_id
+  appgw_subnet_id            = data.terraform_remote_state.vnet.outputs.subnet_ids["appgw"]
+  aks_subnet_id              = data.terraform_remote_state.vnet.outputs.subnet_ids["aks"]
+  node_count                 = var.node_count
+  vm_size                     = var.vm_size
+  min_count                  = var.min_count
+  max_count                  = var.max_count
+  service_cidr               = var.service_cidr
+  dns_service_ip             = var.dns_service_ip
+  log_analytics_workspace_id = data.terraform_remote_state.log_analytics.outputs.log_analytics_workspace_id
+  tags                        = var.tags
 }

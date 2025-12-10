@@ -1,80 +1,77 @@
 # tfsec:ignore:azure-container-limit-authorized-ips Reason: Using api_server_access_profile in provider v4.0
 resource "azurerm_kubernetes_cluster" "aks_cluster" {
-    name = var.cluster_name
-    location = data.terraform_remote_state.resource_group.outputs.rg_location
-    resource_group_name = data.terraform_remote_state.resource_group.outputs.rg_name
-  dns_prefix = var.dns_prefix
+  name                = var.cluster_name
+  location            = var.resource_group_location
+  resource_group_name = var.resource_group_name
+  dns_prefix          = var.dns_prefix
 
   api_server_access_profile {
-    authorized_ip_ranges = ["10.0.0.0/16", "192.30.252.0/22", "185.199.108.0/22", "0.0.0.0/0"]
+    authorized_ip_ranges = var.authorized_ip_ranges
   }
 
   service_mesh_profile {
-    mode = "Istio"
-    revisions = ["asm-1-26"]
+    mode                            = "Istio"
+    revisions                       = ["asm-1-26"]
     external_ingress_gateway_enabled = true
     internal_ingress_gateway_enabled = true
   }
 
   ingress_application_gateway {
-    gateway_id = data.terraform_remote_state.appgw.outputs.appgw_id
+    gateway_id = var.appgw_id
   }
 
-
   default_node_pool {
-    name = "system"
-    node_count = 2
-    vm_size = var.vm_size
+    name                = "system"
+    node_count          = var.node_count
+    vm_size             = var.vm_size
     auto_scaling_enabled = true
-    min_count = 2
-    max_count = 2
-    vnet_subnet_id = data.terraform_remote_state.network.outputs.subnet_ids["aks"]
+    min_count           = var.min_count
+    max_count           = var.max_count
+    vnet_subnet_id      = var.aks_subnet_id
   }
 
   network_profile {
     network_plugin = "azure"
     network_policy = "azure"
-    service_cidr = "10.1.0.0/16"
-    dns_service_ip = "10.1.0.10"
+    service_cidr   = var.service_cidr
+    dns_service_ip = var.dns_service_ip
   }
 
   oms_agent {
-    log_analytics_workspace_id = data.terraform_remote_state.log_analytics.outputs.log_analytics_workspace_id
+    log_analytics_workspace_id = var.log_analytics_workspace_id
   }
 
-  
   identity {
     type = "SystemAssigned"
-   
   }
+
   role_based_access_control_enabled = true
-
-  tags = var.tags
+  tags                              = var.tags
 }
-
 
 data "azurerm_user_assigned_identity" "agic_addon" {
   name                = "ingressapplicationgateway-${azurerm_kubernetes_cluster.aks_cluster.name}"
-  resource_group_name = azurerm_kubernetes_cluster.aks_cluster.node_resource_group
+  resource_group_name = var.resource_group_name
 
   depends_on = [
     azurerm_kubernetes_cluster.aks_cluster
   ]
 }
+
 resource "azurerm_role_assignment" "agic_addon_appgw_contrib" {
-  scope                = data.terraform_remote_state.appgw.outputs.appgw_id
+  scope                = var.appgw_id
   principal_id         = data.azurerm_user_assigned_identity.agic_addon.principal_id
   role_definition_name = "Contributor"
 }
 
 resource "azurerm_role_assignment" "agic_addon_rg_reader" {
-  scope                = data.terraform_remote_state.resource_group.outputs.rg_id
+  scope                = var.resource_group_id
   principal_id         = data.azurerm_user_assigned_identity.agic_addon.principal_id
   role_definition_name = "Reader"
 }
 
 resource "azurerm_role_assignment" "agic_addon_subnet_network_contrib" {
-  scope                = data.terraform_remote_state.network.outputs.subnet_ids["appgw"]
+  scope                = var.appgw_subnet_id
   principal_id         = data.azurerm_user_assigned_identity.agic_addon.principal_id
   role_definition_name = "Network Contributor"
 
