@@ -3,20 +3,6 @@ variable "cluster_name" {
   type        = string
 }
 
-variable "resource_group_name" {
-  description = "Resource group for AKS"
-  type        = string
-}
-
-variable "resource_group_location" {
-  description = "Location of the resource group"
-  type        = string
-}
-
-variable "resource_group_id" {
-  description = "Resource group ID for role assignments"
-  type        = string
-}
 
 variable "dns_prefix" {
   description = "DNS prefix for AKS"

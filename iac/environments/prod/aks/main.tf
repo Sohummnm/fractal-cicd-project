@@ -1,9 +1,9 @@
 module "aks" {
   source                     = "../../../modules/aks"
   cluster_name               = var.cluster_name
-  resource_group_name        = data.terraform_remote_state.resource_group.outputs.rg_name
-  resource_group_location    = data.terraform_remote_state.resource_group.outputs.rg_location
-  resource_group_id          = data.terraform_remote_state.resource_group.outputs.rg_id
+  resource_group_name        = data.azurerm_resource_group.prod_rg.name
+  resource_group_location    = data.azurerm_resource_group.prod_rg.location
+  resource_group_id          = data.azurerm_resource_group.prod_rg.id
   dns_prefix                 = var.dns_prefix
   authorized_ip_ranges       = var.authorized_ip_ranges
   appgw_id                   = data.azurerm_application_gateway.appgw.id

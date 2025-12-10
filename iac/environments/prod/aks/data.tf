@@ -59,3 +59,6 @@ data "azurerm_log_analytics_workspace" "log_analytics" {
   name                = "prod-monitoring-law"     
   resource_group_name = "rg-prod"
 }
+data "azurerm_resource_group" "prod_rg" {
+  name = "rg-prod" 
+}
