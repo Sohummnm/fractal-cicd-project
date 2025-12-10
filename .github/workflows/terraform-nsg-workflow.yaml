@@ -1,0 +1,36 @@
+name: Terraform NSG Workflow
+
+on:
+  workflow_dispatch:      
+    inputs:
+      tf_action:
+        description: 'Terraform action (plan/apply/destroy)'
+        required: true
+        default: plan
+
+  workflow_call:          
+    inputs:
+      tf_action:
+        required: true
+        type: string
+      working_directory:
+        required: true
+        type: string
+    secrets:
+      AZURE_CLIENT_ID:
+        required: true
+      AZURE_TENANT_ID:
+        required: true
+      AZURE_SUBSCRIPTION_ID:
+        required: true
+
+jobs:
+  terraform:
+    uses: ./.github/workflows/reusable-terraform.yml
+    with:
+      working_directory: ${{ inputs.working_directory || 'iac/environments/prod/nsg' }}
+      tf_action: ${{ inputs.tf_action || github.event.inputs.tf_action }}
+    secrets:
+      AZURE_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
+      AZURE_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
+      AZURE_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
