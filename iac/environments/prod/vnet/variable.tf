@@ -14,4 +14,4 @@ variable "tags" {
 variable "subnets" {
     description = "A map of subnet names to address prefixes"
     type        = map(string)
-}
+} 

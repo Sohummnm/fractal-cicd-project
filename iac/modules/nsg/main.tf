@@ -61,3 +61,4 @@ resource "azurerm_network_security_rule" "db_rules" {
   resource_group_name         = data.terraform_remote_state.resource_group.outputs.rg_name
   network_security_group_name = azurerm_network_security_group.nsg["db"].name
 }
+ 

@@ -1,4 +1,4 @@
-resource "azurerm_log_analytics_workspace" "monitoring" {
+ resource "azurerm_log_analytics_workspace" "monitoring" {
   name                = var.workspace_name
   location            = data.terraform_remote_state.resource_group.outputs.rg_location
   resource_group_name = data.terraform_remote_state.resource_group.outputs.rg_name
@@ -7,3 +7,4 @@ resource "azurerm_log_analytics_workspace" "monitoring" {
 
   tags = var.tags
 }
+ 

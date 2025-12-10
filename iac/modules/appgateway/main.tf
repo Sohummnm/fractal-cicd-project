@@ -62,3 +62,4 @@ resource "azurerm_application_gateway" "appgw-prod-aks" {
   tags = var.tags
 }
 
+ 

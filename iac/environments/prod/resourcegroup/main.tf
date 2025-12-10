@@ -1,7 +1,7 @@
 
 module "rg" {
-  source = "../../modules/resource-groups"
+  source = "../../../modules/resource-groups"
   rg_name = var.rg_name
-  rg_location = var.rg_location
+  location = var.location
   tags = var.tags
 }
