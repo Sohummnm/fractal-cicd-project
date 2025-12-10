@@ -126,7 +126,7 @@ if($_SERVER['REQUEST_METHOD'] == "POST")
     <div class="card">
 
         <!-- BLUE badge -->
-        <div class="tag-blue"> VERSION - 1 DEPLOYMENT LIVE</div>
+        <div class="tag-blue"> VERSION - 2 DEPLOYMENT LIVE</div>
 
         <h2>Restaurant Registration</h2>
 
