@@ -1,0 +1,113 @@
+name: Terraform Mega Environment Pipeline
+
+on:
+  workflow_dispatch:
+    inputs:
+      tf_action:
+        description: 'Terraform action (plan/apply/destroy)'
+        required: true
+        default: plan
+
+jobs:
+  resource_group:
+    uses: ./.github/workflows/terraform-resourcegroup-workflow.yaml
+    with:
+      working_directory: iac/environments/prod/resourcegroup
+      tf_action: ${{ github.event.inputs.tf_action }}
+    secrets:
+      AZURE_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
+      AZURE_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
+      AZURE_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+
+  vnet:
+    needs: resource_group
+    uses: ./.github/workflows/terraform-vnet-workflow.yaml
+    with:
+      working_directory: iac/environments/prod/vnet
+      tf_action: ${{ github.event.inputs.tf_action }}
+    secrets:
+      AZURE_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
+      AZURE_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
+      AZURE_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+
+  pip:
+    needs: resource_group
+    uses: ./.github/workflows/terraform-pip-workflow.yaml
+    with:
+      working_directory: iac/environments/prod/pip
+      tf_action: ${{ github.event.inputs.tf_action }}
+    secrets:
+      AZURE_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
+      AZURE_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
+      AZURE_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+
+  appgw:
+    needs: 
+      - vnet
+      - pip
+    uses: ./.github/workflows/terraform-appgw-workflow.yaml
+    with:
+      working_directory: iac/environments/prod/appgw
+      tf_action: ${{ github.event.inputs.tf_action }}
+    secrets:
+      AZURE_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
+      AZURE_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
+      AZURE_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+
+  nsg:
+    needs: vnet
+    uses: ./.github/workflows/terraform-nsg-workflow.yaml
+    with:
+      working_directory: iac/environments/prod/nsg
+      tf_action: ${{ github.event.inputs.tf_action }}
+    secrets:
+      AZURE_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
+      AZURE_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
+      AZURE_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+
+  monitoring:
+    needs: resource_group
+    uses: ./.github/workflows/terraform-monitoring-workflow.yaml
+    with:
+      working_directory: iac/environments/prod/monitoring
+      tf_action: ${{ github.event.inputs.tf_action }}
+    secrets:
+      AZURE_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
+      AZURE_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
+      AZURE_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+
+  aks:
+    needs: 
+      - vnet
+      - appgw
+      - monitoring
+    uses: ./.github/workflows/terraform-aks-workflow.yaml
+    with:
+      working_directory: iac/environments/prod/aks
+      tf_action: ${{ github.event.inputs.tf_action }}
+    secrets:
+      AZURE_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
+      AZURE_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
+      AZURE_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+
+  acr:
+    needs: aks
+    uses: ./.github/workflows/terraform-acr-workflow.yaml
+    with:
+      working_directory: iac/environments/prod/acr
+      tf_action: ${{ github.event.inputs.tf_action }}
+    secrets:
+      AZURE_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
+      AZURE_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
+      AZURE_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+
+  gitops:
+    needs: aks
+    uses: ./.github/workflows/terraform-gitops-workflow.yaml
+    with:
+      working_directory: iac/environments/prod/gitops
+      tf_action: ${{ github.event.inputs.tf_action }}
+    secrets:
+      AZURE_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
+      AZURE_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
+      AZURE_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
