@@ -34,15 +34,6 @@ variable "appgw_id" {
   type        = string
 }
 
-variable "appgw_subnet_id" {
-  description = "Subnet ID of Application Gateway for role assignment"
-  type        = string
-}
-
-variable "aks_subnet_ids" {
-  description = "Subnet ID for AKS cluster"
-  type        = string
-}
 
 variable "node_count" {
   description = "Initial node count"

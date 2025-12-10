@@ -45,3 +45,9 @@ data "azurerm_subnet" "aks" {
   virtual_network_name = data.azurerm_virtual_network.prod_vnet.name
   resource_group_name  = "rg-prod"
 }
+data "azurerm_subnet" "appgw" {
+  name                 = "appgw"
+  virtual_network_name = data.azurerm_virtual_network.prod_vnet.name
+  resource_group_name  = "rg-prod"
+}
+
