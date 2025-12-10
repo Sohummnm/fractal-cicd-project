@@ -39,7 +39,7 @@ variable "appgw_subnet_id" {
   type        = string
 }
 
-variable "aks_subnet_id" {
+variable "aks_subnet_ids" {
   description = "Subnet ID for AKS cluster"
   type        = string
 }

@@ -8,7 +8,7 @@ module "aks" {
   authorized_ip_ranges       = var.authorized_ip_ranges
   appgw_id                   = data.terraform_remote_state.appgw.outputs.appgw_id
   appgw_subnet_id            = data.terraform_remote_state.network.outputs.subnet_ids["appgw"]
-  aks_subnet_id              = data.terraform_remote_state.network.outputs.subnet_ids["aks"]
+  aks_subnet_ids             = data.terraform_remote_state.network.outputs.subnet_ids["aks"]
   node_count                 = var.node_count
   vm_size                    = var.vm_size
   min_count                  = var.min_count

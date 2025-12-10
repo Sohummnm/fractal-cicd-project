@@ -27,7 +27,7 @@ resource "azurerm_kubernetes_cluster" "aks_cluster" {
     auto_scaling_enabled = true
     min_count           = var.min_count
     max_count           = var.max_count
-    vnet_subnet_id      = var.aks_subnet_id
+    vnet_subnet_id      = var.aks_subnet_ids
   }
 
   network_profile {
