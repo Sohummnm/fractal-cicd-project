@@ -66,3 +66,9 @@ resource "azurerm_role_assignment" "agic_subnet_network" {
   principal_id         = azurerm_kubernetes_cluster.aks_cluster.identity[0].principal_id
   role_definition_name = "Network Contributor"
 }
+
+resource "azurerm_role_assignment" "aks_subnet_network" {
+  scope                = var.aks_subnet_ids
+  principal_id         = azurerm_kubernetes_cluster.aks_cluster.identity[0].principal_id
+  role_definition_name = "Network Contributor"
+}
