@@ -23,7 +23,9 @@ on:
         required: true
       AZURE_SUBSCRIPTION_ID:
         required: true
-
+permissions:
+    id-token: write
+    contents: read
 jobs:
   terraform:
     uses: ./.github/workflows/reusable-terraform.yml
