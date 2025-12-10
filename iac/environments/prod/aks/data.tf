@@ -51,3 +51,7 @@ data "azurerm_subnet" "appgw" {
   resource_group_name  = "rg-prod"
 }
 
+data "azurerm_application_gateway" "appgw" {
+  name                = "appgw-demo"   
+  resource_group_name = "rg-prod"
+}

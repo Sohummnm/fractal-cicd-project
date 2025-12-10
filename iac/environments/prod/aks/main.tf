@@ -6,7 +6,7 @@ module "aks" {
   resource_group_id          = data.terraform_remote_state.resource_group.outputs.rg_id
   dns_prefix                 = var.dns_prefix
   authorized_ip_ranges       = var.authorized_ip_ranges
-  appgw_id                   = data.terraform_remote_state.appgw.outputs.appgw_id
+  appgw_id                   = data.azurerm_application_gateway.appgw.id
   appgw_subnet_id            = data.azurerm_subnet.appgw.id
   aks_subnet_ids             = data.azurerm_subnet.aks.id
   node_count                 = var.node_count
