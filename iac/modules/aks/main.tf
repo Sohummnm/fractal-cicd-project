@@ -25,7 +25,7 @@ resource "azurerm_kubernetes_cluster" "aks_cluster" {
     name = "system"
     node_count = 2
     vm_size = var.vm_size
-    auto_scaling_enabled = false
+    auto_scaling_enabled = true
     min_count = 2
     max_count = 2
     vnet_subnet_id = data.terraform_remote_state.network.outputs.subnet_ids["aks"]
