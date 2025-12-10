@@ -6,11 +6,11 @@ module "aks" {
   resource_group_id          = data.terraform_remote_state.resource_group.outputs.rg_id
   dns_prefix                 = var.dns_prefix
   authorized_ip_ranges       = var.authorized_ip_ranges
-  appgw_id                     = data.terraform_remote_state.appgw.outputs.appgw_id
+  appgw_id                   = data.terraform_remote_state.appgw.outputs.appgw_id
   appgw_subnet_id            = data.terraform_remote_state.network.outputs.subnet_ids["appgw"]
   aks_subnet_id              = data.terraform_remote_state.network.outputs.subnet_ids["aks"]
   node_count                 = var.node_count
-  vm_size                     = var.vm_size
+  vm_size                    = var.vm_size
   min_count                  = var.min_count
   max_count                  = var.max_count
   service_cidr               = var.service_cidr
