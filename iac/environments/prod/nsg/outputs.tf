@@ -1,7 +1,7 @@
 output "nsg_ids" {
-  value = { for k, v in azurerm_network_security_group.nsg : k => v.id }
+  value = module.nsg.nsg_ids
 }
 
 output "nsg_names" {
-  value = { for k, v in azurerm_network_security_group.nsg : k => v.name }
+  value = module.nsg.nsg_names
 }

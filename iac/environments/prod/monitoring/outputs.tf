@@ -1,6 +1,6 @@
 output "log_analytics_workspace_id" {
-  value = azurerm_log_analytics_workspace.monitoring.id
+  value = module.monitoring.log_analytics_workspace_id
 }
 output "log_analytics_workspace_name" {
-  value = azurerm_log_analytics_workspace.monitoring.name
+  value = module.monitoring.log_analytics_workspace_name
 }
