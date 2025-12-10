@@ -15,6 +15,6 @@ module "aks" {
   max_count                  = var.max_count
   service_cidr               = var.service_cidr
   dns_service_ip             = var.dns_service_ip
-  log_analytics_workspace_id = data.terraform_remote_state.log_analytics.outputs.log_analytics_workspace_id
+  log_analytics_workspace_id = data.azurerm_log_analytics_workspace.log_analytics.id
   tags                        = var.tags
 }

@@ -55,3 +55,7 @@ data "azurerm_application_gateway" "appgw" {
   name                = "appgw-demo"   
   resource_group_name = "rg-prod"
 }
+data "azurerm_log_analytics_workspace" "log_analytics" {
+  name                = "prod-monitoring-law"     
+  resource_group_name = "rg-prod"
+}

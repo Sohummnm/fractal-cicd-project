@@ -66,11 +66,6 @@ variable "dns_service_ip" {
   default     = "10.1.0.10"
 }
 
-variable "log_analytics_workspace_id" {
-  description = "Log Analytics workspace ID"
-  type        = string
-}
-
 variable "tags" {
   description = "Tags to apply"
   type        = map(string)
