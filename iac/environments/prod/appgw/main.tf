@@ -10,4 +10,5 @@ module "appgw" {
   sku_capacity           = var.sku_capacity
   backend_ips            = var.backend_ips
   tags                   = var.tags
+  public_ip_address       = data.terraform_remote_state.pip.outputs.public_ip_address
 }

@@ -49,3 +49,7 @@ variable "tags" {
   type        = map(string)
   default     = {}
 }
+variable "public_ip_address" {
+  type        = string
+  description = "Public IP address for the App Gateway"
+}
