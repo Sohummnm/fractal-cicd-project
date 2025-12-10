@@ -17,7 +17,3 @@ variable "tags" {
   description = "A map of tags to assign to the resources."
   type        = map(string)
 }
-variable "user_node_pool_vm_size" {
-  description = "The size of the VM for the user node pool."
-  type        = string
-}

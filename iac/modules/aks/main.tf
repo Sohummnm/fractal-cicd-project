@@ -9,19 +9,25 @@ resource "azurerm_kubernetes_cluster" "aks_cluster" {
     authorized_ip_ranges = ["10.0.0.0/16", "192.30.252.0/22", "185.199.108.0/22", "0.0.0.0/0"]
   }
 
+  service_mesh_profile {
+    mode = "Istio"
+    revisions = ["asm-1-26"]
+    external_ingress_gateway_enabled = true
+    internal_ingress_gateway_enabled = true
+  }
+
   ingress_application_gateway {
     gateway_id = data.terraform_remote_state.appgw.outputs.appgw_id
-
-
   }
+
 
   default_node_pool {
     name = "system"
-    node_count = 1
+    node_count = 2
     vm_size = var.vm_size
-    auto_scaling_enabled = true
-    min_count = 1
-    max_count = 3
+    auto_scaling_enabled = false
+    min_count = 2
+    max_count = 2
     vnet_subnet_id = data.terraform_remote_state.network.outputs.subnet_ids["aks"]
   }
 
@@ -46,19 +52,6 @@ resource "azurerm_kubernetes_cluster" "aks_cluster" {
   tags = var.tags
 }
 
-resource "azurerm_kubernetes_cluster_node_pool" "user_node_pool" {
-    name = "userpool"
-    kubernetes_cluster_id = azurerm_kubernetes_cluster.aks_cluster.id
-    vm_size = var.user_node_pool_vm_size
-    node_count = 1
-    auto_scaling_enabled = true
-    min_count = 1
-    max_count = 3
-    mode = "User"
-    vnet_subnet_id = data.terraform_remote_state.network.outputs.subnet_ids["aks"]
-    os_type = "Linux"
-    node_public_ip_enabled = false
-}
 
 data "azurerm_user_assigned_identity" "agic_addon" {
   name                = "ingressapplicationgateway-${azurerm_kubernetes_cluster.aks_cluster.name}"
