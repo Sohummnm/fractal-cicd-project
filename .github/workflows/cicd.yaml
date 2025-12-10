@@ -142,7 +142,7 @@ jobs:
         - name: Switch Virtual Service weights
           run: |
             # Set blue = 100, green=0 or vice versa
-            if [ "${{ needs.deploy.outputs.target }}" = "blue" ]; then
+            if [ "${{ needs.deploy.outputs.target }}" = "green" ]; then
               sed -i "/subset: blue/{n; s/weight: [0-9]*/weight: 0/}" aks/istio-virtualservice.yaml
               sed -i "/subset: green/{n; s/weight: [0-9]*/weight: 100/}" aks/istio-virtualservice.yaml
             else
