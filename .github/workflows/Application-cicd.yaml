@@ -1,5 +1,5 @@
 #cicd workflow
-name: CICD
+name: Application CICD [2]
 on:
     workflow_dispatch:
 permissions:
