@@ -107,7 +107,7 @@ jobs:
         AZURE_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
 
   pip:
-    needs: [appgw]
+    needs: [resourcegroup]
     uses: ./.github/workflows/reusable-terraform.yml
     with:
       working_directory: "iac/environments/${{ github.event.inputs.environment }}/pip"
