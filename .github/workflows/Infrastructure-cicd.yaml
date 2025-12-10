@@ -1,0 +1,115 @@
+name: Provision Full Environment
+
+on:
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: "Environment to deploy (dev/prod)"
+        required: true
+        default: "prod"
+      tf_action:
+        description: "Terraform action to run (plan/apply/destroy)"
+        required: true
+        default: "plan"
+
+jobs:
+
+  resourcegroup:
+    uses: ./.github/workflows/reusable-terraform.yml
+    with:
+      working_directory: "iac/environments/${{ github.event.inputs.environment }}/resourcegroup"
+      tf_action: ${{ github.event.inputs.tf_action }}
+    secrets:
+        AZURE_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
+        AZURE_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
+        AZURE_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+
+  vnet:
+    needs: resourcegroup
+    uses: ./.github/workflows/reusable-terraform.yml
+    with:
+      working_directory: "iac/environments/${{ github.event.inputs.environment }}/vnet"
+      tf_action: ${{ github.event.inputs.tf_action }}
+    secrets:
+        AZURE_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
+        AZURE_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
+        AZURE_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+
+  nsg:
+    needs: vnet
+    uses: ./.github/workflows/reusable-terraform.yml
+    with:
+      working_directory: "iac/environments/${{ github.event.inputs.environment }}/nsg"
+      tf_action: ${{ github.event.inputs.tf_action }}
+    secrets:
+        AZURE_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
+        AZURE_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
+        AZURE_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+
+  appgw:
+    needs: [vnet, nsg]
+    uses: ./.github/workflows/reusable-terraform.yml
+    with:
+      working_directory: "iac/environments/${{ github.event.inputs.environment }}/appgw"
+      tf_action: ${{ github.event.inputs.tf_action }}
+    secrets:
+        AZURE_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
+        AZURE_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
+        AZURE_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+
+  aks:
+    needs: [vnet, nsg, appgw]
+    uses: ./.github/workflows/reusable-terraform.yml
+    with:
+      working_directory: "iac/environments/${{ github.event.inputs.environment }}/aks"
+      tf_action: ${{ github.event.inputs.tf_action }}
+    secrets:
+        AZURE_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
+        AZURE_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
+        AZURE_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+
+
+  monitoring:
+    needs: [aks]
+    uses: ./.github/workflows/reusable-terraform.yml
+    with:
+      working_directory: "iac/environments/${{ github.event.inputs.environment }}/monitoring"
+      tf_action: ${{ github.event.inputs.tf_action }}
+    secrets:
+        AZURE_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
+        AZURE_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
+        AZURE_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+
+
+  acr:
+    needs: [aks]
+    uses: ./.github/workflows/reusable-terraform.yml
+    with:
+      working_directory: "iac/environments/${{ github.event.inputs.environment }}/acr"
+      tf_action: ${{ github.event.inputs.tf_action }}
+    secrets:
+        AZURE_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
+        AZURE_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
+        AZURE_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+
+  gitops:
+    needs: [aks]
+    uses: ./.github/workflows/reusable-terraform.yml
+    with:
+      working_directory: "iac/environments/${{ github.event.inputs.environment }}/gitops"
+      tf_action: ${{ github.event.inputs.tf_action }}
+    secrets:
+        AZURE_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
+        AZURE_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
+        AZURE_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+
+  pip:
+    needs: [appgw]
+    uses: ./.github/workflows/reusable-terraform.yml
+    with:
+      working_directory: "iac/environments/${{ github.event.inputs.environment }}/pip"
+      tf_action: ${{ github.event.inputs.tf_action }}
+    secrets:
+        AZURE_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
+        AZURE_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
+        AZURE_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
