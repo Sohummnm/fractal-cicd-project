@@ -1,12 +1,13 @@
 resource "azapi_resource" "flux_extension" {
-  type      = "Microsoft.KubernetesConfiguration/extensions@2022-03-01"
+  type      = "Microsoft.KubernetesConfiguration/extensions@2023-05-01"
   name      = "flux"
   parent_id = var.aks_cluster_id
 
   body = jsonencode({
     properties = {
-      extensionType            = "flux"
-      autoUpgradeMinorVersion  = true
+      extensionType = "microsoft.flux"
+      autoUpgradeMinorVersion = true
+
       scope = {
         cluster = {
           releaseNamespace = "flux-system"
@@ -17,32 +18,35 @@ resource "azapi_resource" "flux_extension" {
 }
 
 resource "azapi_resource" "flux_gitops" {
-  type      = "Microsoft.KubernetesConfiguration/fluxConfigurations@2022-03-01"
+  type      = "Microsoft.KubernetesConfiguration/fluxConfigurations@2023-05-01"
   name      = "flux-gitops"
   parent_id = var.aks_cluster_id
-  location  = var.resource_group_location
 
   body = jsonencode({
     properties = {
-      scope      = "cluster"
       namespace  = "flux-system"
       sourceKind = "GitRepository"
-      
+      suspend    = false
+
       gitRepository = {
-        url                    = var.gitops_repo_url
-        syncIntervalInSeconds  = 60
-        httpsCACert            = null
+        url = var.gitops_repo_url
+        repositoryRef = {
+          branch = "main"
+        }
+        syncIntervalInSeconds = 60
       }
 
       kustomizations = {
         app = {
-          path                     = var.gitops_repo_path
-          prune                    = true
-          retryIntervalInSeconds   = 60
+          path = var.gitops_repo_path
+          prune = true
+          syncIntervalInSeconds = 60
         }
       }
     }
   })
 
-  depends_on = [azapi_resource.flux_extension]
+  depends_on = [
+    azapi_resource.flux_extension
+  ]
 }
