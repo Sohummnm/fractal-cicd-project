@@ -49,33 +49,20 @@ resource "azurerm_kubernetes_cluster" "aks_cluster" {
   tags                              = var.tags
 }
 
-data "azurerm_user_assigned_identity" "agic_addon" {
-  name                = "ingressapplicationgateway-${azurerm_kubernetes_cluster.aks_cluster.name}"
-  resource_group_name = var.resource_group_name
-
-  depends_on = [
-    azurerm_kubernetes_cluster.aks_cluster
-  ]
-}
-
-resource "azurerm_role_assignment" "agic_addon_appgw_contrib" {
+resource "azurerm_role_assignment" "agic_appgw_contrib" {
   scope                = var.appgw_id
-  principal_id         = data.azurerm_user_assigned_identity.agic_addon.principal_id
+  principal_id         = azurerm_kubernetes_cluster.aks_cluster.identity[0].principal_id
   role_definition_name = "Contributor"
 }
 
-resource "azurerm_role_assignment" "agic_addon_rg_reader" {
+resource "azurerm_role_assignment" "agic_rg_reader" {
   scope                = var.resource_group_id
-  principal_id         = data.azurerm_user_assigned_identity.agic_addon.principal_id
+  principal_id         = azurerm_kubernetes_cluster.aks_cluster.identity[0].principal_id
   role_definition_name = "Reader"
 }
 
-resource "azurerm_role_assignment" "agic_addon_subnet_network_contrib" {
+resource "azurerm_role_assignment" "agic_subnet_network" {
   scope                = var.appgw_subnet_id
-  principal_id         = data.azurerm_user_assigned_identity.agic_addon.principal_id
+  principal_id         = azurerm_kubernetes_cluster.aks_cluster.identity[0].principal_id
   role_definition_name = "Network Contributor"
-
-  depends_on = [
-    data.azurerm_user_assigned_identity.agic_addon
-  ]
 }
