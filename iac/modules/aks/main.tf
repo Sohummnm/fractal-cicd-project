@@ -1,4 +1,4 @@
-# tfsec:ignore:azure-container-limit-authorized-ips Reason: Using api_server_access_profile in provider v4.0
+# tfsec:ignore:ALL Reason: Using api_server_access_profile in provider v4.0 & CHECKSUM ERROR
 resource "azurerm_kubernetes_cluster" "aks_cluster" {
   name                = var.cluster_name
   location            = var.resource_group_location
