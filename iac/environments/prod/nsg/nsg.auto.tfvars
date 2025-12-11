@@ -29,6 +29,14 @@ aks_rules = {
     port      = "443"
     source    = "10.0.128.0/24"   # literal CIDR of AppGW subnet
   }
+  allow_appgw_ingress = {
+  priority  = 115
+  direction = "Inbound"
+  access    = "Allow"
+  protocol  = "Tcp"
+  port      = "80"
+  source    = "10.0.128.0/24"
+}
   allow_out_acr = {
     priority  = 200
     direction = "Outbound"
@@ -79,6 +87,14 @@ appgw_rules = {
     access    = "Allow"
     protocol  = "Tcp"
     port      = "443"
+    source    = "10.0.0.0/17"   # literal CIDR of AKS subnet
+  }
+    allow_to_aks = {
+    priority  = 200
+    direction = "Outbound"
+    access    = "Allow"
+    protocol  = "Tcp"
+    port      = "80"
     source    = "10.0.0.0/17"   # literal CIDR of AKS subnet
   }
   allow_internet_ephemeral = {

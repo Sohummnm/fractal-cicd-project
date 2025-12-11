@@ -17,3 +17,12 @@ data "terraform_remote_state" "vnet" {
     key = "vnet.tfstate"
   }
 }
+data "terraform_remote_state" "appgw" {
+  backend = "azurerm"
+  config = {
+    resource_group_name = "db_terraform_rg"
+    storage_account_name = "fractalcicd"
+    container_name = "prod"
+    key = "appgateway.tfstate"
+  }
+}
