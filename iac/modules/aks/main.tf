@@ -12,7 +12,7 @@ resource "azurerm_kubernetes_cluster" "aks_cluster" {
   service_mesh_profile {
     mode                            = "Istio"
     revisions                       = ["asm-1-26"]
-    external_ingress_gateway_enabled = true
+    external_ingress_gateway_enabled = false
     internal_ingress_gateway_enabled = true
   }
 
