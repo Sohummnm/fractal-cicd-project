@@ -14,6 +14,6 @@ spec:
             pathType: Prefix
             backend:
               service:
-                name: aks-istio-ingressgateway-external
+                name: aks-istio-ingressgateway-internal
                 port:
                   number: 80
