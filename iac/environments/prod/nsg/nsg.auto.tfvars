@@ -90,7 +90,7 @@ appgw_rules = {
     source    = "10.0.0.0/17"   # literal CIDR of AKS subnet
   }
     allow_to_aks = {
-    priority  = 200
+    priority  = 205
     direction = "Outbound"
     access    = "Allow"
     protocol  = "Tcp"
