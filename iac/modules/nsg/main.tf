@@ -10,6 +10,7 @@ resource "azurerm_subnet_network_security_group_association" "assoc" {
   for_each = var.subnet_associations
   subnet_id                 = each.value.subnet_id
   network_security_group_id = azurerm_network_security_group.nsg[each.value.nsg_name].id
+  depends_on = [ azurerm_network_security_group.nsg ]
 }
 
 resource "azurerm_network_security_rule" "aks_rules" {
@@ -25,6 +26,7 @@ resource "azurerm_network_security_rule" "aks_rules" {
   destination_address_prefix  = "*"
   resource_group_name         = var.nsg_resource_group_name
   network_security_group_name = azurerm_network_security_group.nsg["aks"].name
+  depends_on = [ azurerm_network_security_group.nsg ]
 }
 
 resource "azurerm_network_security_rule" "appgw_rules" {
@@ -40,6 +42,7 @@ resource "azurerm_network_security_rule" "appgw_rules" {
   destination_address_prefix  = "*"
   resource_group_name         = var.nsg_resource_group_name
   network_security_group_name = azurerm_network_security_group.nsg["appgw"].name
+  depends_on = [ azurerm_network_security_group.nsg ]
 }
 
 resource "azurerm_network_security_rule" "db_rules" {
@@ -55,4 +58,5 @@ resource "azurerm_network_security_rule" "db_rules" {
   destination_address_prefix  = "*"
   resource_group_name         = var.nsg_resource_group_name
   network_security_group_name = azurerm_network_security_group.nsg["db"].name
+  depends_on = [ azurerm_network_security_group.nsg ]
 }
