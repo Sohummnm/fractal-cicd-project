@@ -5,7 +5,7 @@ resource "azapi_resource" "flux_extension" {
 
   body = jsonencode({
     properties = {
-      extensionType = "flux"
+      extensionType = "Microsoft.flux"
       autoUpgradeMinorVersion = true
       releaseTrain = "Stable"
 
