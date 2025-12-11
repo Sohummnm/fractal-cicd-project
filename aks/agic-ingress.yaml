@@ -4,7 +4,7 @@ metadata:
   name: frontend
   namespace: aks-istio-ingress
 spec:
-  ingressClassName: azure/application-gateway
+  ingressClassName: azure-application-gateway
   rules:
     - host: ""
       http:
