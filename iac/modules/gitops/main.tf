@@ -5,13 +5,17 @@ resource "azapi_resource" "flux_extension" {
 
   body = jsonencode({
     properties = {
-      extensionType = "microsoft.flux"
+      extensionType = "flux"
       autoUpgradeMinorVersion = true
+      releaseTrain = "Stable"
 
       scope = {
         cluster = {
           releaseNamespace = "flux-system"
         }
+      }
+      configurationSettings = {
+        namespace = "flux-system"
       }
     }
   })
