@@ -3,22 +3,23 @@ resource "azapi_resource" "flux_extension" {
   name      = "flux"
   parent_id = var.aks_cluster_id
 
-  body = jsonencode({
+  body = {
     properties = {
-      extensionType = "Microsoft.Flux"
+      extensionType           = "Microsoft.Flux"
       autoUpgradeMinorVersion = true
-      releaseTrain = "Stable"
+      releaseTrain            = "Stable"
 
       scope = {
         cluster = {
           releaseNamespace = "flux-system"
         }
       }
+
       configurationSettings = {
-        "namespace" = "flux-system"
+        namespace = "flux-system"
       }
     }
-  })
+  }
 }
 
 resource "azapi_resource" "flux_gitops" {
@@ -26,7 +27,7 @@ resource "azapi_resource" "flux_gitops" {
   name      = "flux-gitops"
   parent_id = var.aks_cluster_id
 
-  body = jsonencode({
+  body = {
     properties = {
       namespace  = "flux-system"
       sourceKind = "GitRepository"
@@ -42,13 +43,13 @@ resource "azapi_resource" "flux_gitops" {
 
       kustomizations = {
         app = {
-          path = var.gitops_repo_path
-          prune = true
+          path                  = var.gitops_repo_path
+          prune                 = true
           syncIntervalInSeconds = 60
         }
       }
     }
-  })
+  }
 
   depends_on = [
     azapi_resource.flux_extension
