@@ -9,15 +9,12 @@ spec:
   gateways:
   - frontend-gateway
   http:
-  - match:
-    - uri:
-        prefix: /stateful
-    route:
-    - destination:
-        host: frontend-service-blue.project.svc.cluster.local
-        subset: blue
-      weight: 100
-    - destination:
-        host: frontend-service-green.project.svc.cluster.local
-        subset: green
-      weight: 0
+    - route:
+      - destination:
+          host: frontend-service-blue.project.svc.cluster.local
+          subset: blue
+        weight: 100
+      - destination:
+          host: frontend-service-green.project.svc.cluster.local
+          subset: green
+        weight: 0
