@@ -8,6 +8,13 @@ resource "azurerm_kubernetes_cluster" "aks_cluster" {
   api_server_access_profile {
     authorized_ip_ranges = var.authorized_ip_ranges
   }
+  oidc_issuer_enabled = true
+  workload_identity_enabled = true
+
+  key_vault_secrets_provider {
+    secret_rotation_enabled = true 
+    secret_rotation_interval = "2h" 
+  }
 
   service_mesh_profile {
     mode                            = "Istio"

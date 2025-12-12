@@ -1,0 +1,51 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: managed-db-app
+  namespace: managed-db
+spec:
+  replicas: 1
+  selector: 
+    matchLabels:
+      app: managed-db
+  template:
+    metadata:
+      labels:
+        app: managed-db
+    spec:
+      serviceAccountName: fractal-cicd-sa
+      containers:
+      - name: managed-db-app
+        image: sohummnm/frontend:v1
+        volumeMounts:
+        - name: secrets-store-inline
+          mountPath: "/mnt/secret-store"
+          read-only: true
+        env:
+        - name: DB_HOST
+          valueFrom: 
+            secretKeyRef:
+              key: db-host
+              name: kv-secret
+        - name: DB_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              key: db-password
+              name: kv-secret
+        - name: DB_USER
+          valueFrom:
+            secretKeyRef:
+              name: kv-secret
+              key: db-user
+        - name: DB_NAME
+          valueFrom:
+            secretKeyref:
+              key: db-name
+              name: kv-secret
+      volumes:
+      - name: secrets-store-inline
+        csi:
+          driver: secrets-store.csi.x-k8s.io/v1
+          readonly: true
+          volumeAttributes:
+            SecretProviderClass: managed-db-secrets-provider-class
