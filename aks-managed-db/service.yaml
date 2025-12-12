@@ -4,7 +4,7 @@ metadata:
   name: managed-db-svc
   namespace: managed-db
 spec:
-  type: LoadBalancer
+  type: ClusterIP
   selector:
     app: managed-db
   ports:
