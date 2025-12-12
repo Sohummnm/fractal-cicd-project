@@ -5,16 +5,19 @@ metadata:
   namespace: project
 spec:
   hosts:
-  - "statefulset.local"
+  - "*"
   gateways:
   - frontend-gateway
   http:
-  - route:
-    - destination:
-        host: frontend-service-blue.project.svc.cluster.local
-        subset: blue
-      weight: 100
-    - destination:
-        host: frontend-service-green.project.svc.cluster.local
-        subset: green
-      weight: 0
+  - match:
+      - uri:
+          prefix: /stateful
+    route:
+      - destination:
+          host: frontend-service-blue.project.svc.cluster.local
+          subset: blue
+        weight: 100
+      - destination:
+          host: frontend-service-green.project.svc.cluster.local
+          subset: green
+        weight: 0
