@@ -46,6 +46,6 @@ spec:
       - name: secrets-store-inline
         csi:
           driver: secrets-store.csi.k8s.io
-          readonly: true
+          readOnly: true
           volumeAttributes:
             secretProviderClass: managed-db-secrets-provider-class
