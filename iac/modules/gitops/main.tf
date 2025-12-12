@@ -26,6 +26,9 @@ resource "azapi_resource" "flux_gitops" {
   type      = "Microsoft.KubernetesConfiguration/fluxConfigurations@2023-05-01"
   name      = "flux-gitops"
   parent_id = var.aks_cluster_id
+  lifecycle {
+    ignore_changes = [ identity ]
+  }
 
   body = {
     properties = {
