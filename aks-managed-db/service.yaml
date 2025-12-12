@@ -2,6 +2,7 @@ apiVersion: v1
 kind: Service
 metadata:
   name: managed-db-svc
+  namespace: managed-db
 spec:
   type: LoadBalancer
   selector:
