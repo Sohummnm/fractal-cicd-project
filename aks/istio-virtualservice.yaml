@@ -9,6 +9,9 @@ spec:
   gateways:
   - frontend-gateway
   http:
+    - match:
+        - uri:
+            prefix: /stateful
     - route:
       - destination:
           host: frontend-service-blue.project.svc.cluster.local
