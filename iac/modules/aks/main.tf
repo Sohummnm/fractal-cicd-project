@@ -8,7 +8,7 @@ resource "azurerm_kubernetes_cluster" "aks_cluster" {
   api_server_access_profile {
     authorized_ip_ranges = var.authorized_ip_ranges
   }
-  oidc_issuer_enabled = false
+  oidc_issuer_enabled = true
   workload_identity_enabled = false
 
   key_vault_secrets_provider {
