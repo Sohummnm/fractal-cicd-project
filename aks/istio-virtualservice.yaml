@@ -5,7 +5,7 @@ metadata:
   namespace: project
 spec:
   hosts:
-  - "*"
+  - "statefulset.local"
   gateways:
   - frontend-gateway
   http:
